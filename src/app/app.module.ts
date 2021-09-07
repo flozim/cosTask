@@ -5,6 +5,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatInputModule } from '@angular/material/input';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -12,6 +20,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HomeComponent
   ],
   imports: [
+    MatProgressSpinnerModule,
+    MatCardModule,
+    MatInputModule,
+    MatChipsModule,
+    MatIconModule,
+    MatSliderModule,
+    MatButtonModule,
+    MatToolbarModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule

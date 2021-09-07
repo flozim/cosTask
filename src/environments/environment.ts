@@ -3,8 +3,15 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
-};
+  production: false,
+  backendUrls: {
+    getNextAppImgIds: "/getNextAppImgIds",
+    getAppImgById: "/getAppImgById"
+  },
+  backendPort: 1,
+  supabaseUrl: "https://xshrxoynbpixtqabapnv.supabase.co",
+  supbaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaWF0IjoxNjMxMDE2NDA1LCJleHAiOjE5NDY1OTI0MDV9.hGqNzKGuLxRrr9ExUwwJeoA_yzVAnYUt_e9REWiJFzQ"
+}
 
 /*
  * For easier debugging in development mode, you can import the following file

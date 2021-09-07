@@ -1,1 +1,52 @@
-<p>home works!</p>
+<mat-toolbar id="navigation-top" class="navigation-top">
+    <p>Bildergalerie</p>
+</mat-toolbar>
+
+<div id="content">
+    <div class="noIdsFound===true" *ngIf="!loadingIds && loadedImgs?.length===0">
+        Keine Bilder gefunden.
+    </div>
+
+    <div id="tags_container">
+        <mat-form-field id="tagsFormField">
+            <mat-label>Setze hier Tags für das Bild:</mat-label>
+            <mat-chip-list #chipList aria-label="Tags Selection" class="tags_selection">
+                <mat-chip *ngFor="let tag of selectedTags" [selectable]="true" [removable]="true">
+                    {{tag}}
+                    <mat-icon matChipRemove (click)="removeTag(tag)">cancel</mat-icon>
+                </mat-chip>
+                <input matInput placeholder="Neuer Tag..." [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                    (matChipInputTokenEnd)="addTag($event)">
+            </mat-chip-list>
+        </mat-form-field>
+
+        <input class="custom-file-input" type="file" accept="image/*" (change)="uploadImg($event)">
+    </div>
+
+    <div class="img_container" *ngFor="let appImg of loadedImgs;">
+
+        <mat-card>
+            <div>
+                <mat-spinner *ngIf="appImg.data===undefined" [diameter]="50"></mat-spinner>
+                <img class="individualImage" *ngIf="appImg.data!=undefined" src="{{appImg.data}}"
+                    (click)="showLargeImageOverlay(appImg.data)">
+            </div>
+
+            <p>Id: {{appImg.id}}</p>
+            <p>Hochgeladen um: {{appImg.timestamp}}</p>
+
+            <mat-chip-list *ngIf="appImg.tags?.length>0">
+                <mat-chip *ngFor="let tag of appImg.tags">{{tag}}</mat-chip>
+            </mat-chip-list>
+            <p *ngIf="appImg.tags===null">Keine Tags gesetzt</p>
+
+
+        </mat-card>
+    </div>
+
+</div>
+
+<div #largeImageOverlay id="largeImageOverlay" (click)="closeLargeImgOverlay()">
+    <img src="{{largeImgOverlayData}}">
+</div>
