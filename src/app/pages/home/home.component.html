@@ -29,9 +29,11 @@
 
     </div>
 
-    <div class="img_container" *ngFor="let appImg of loadedImgs;">
+    <div id="allImgs">
 
-        <mat-card>
+
+
+        <mat-card *ngFor="let appImg of loadedImgs;">
             <div>
                 <mat-spinner *ngIf="appImg.data===undefined" [diameter]="50"></mat-spinner>
                 <img class="individualImage" *ngIf="appImg.data!=undefined" src="{{appImg.data}}"
@@ -48,7 +50,11 @@
 
 
         </mat-card>
+
+
+
     </div>
+
 
 </div>
 
