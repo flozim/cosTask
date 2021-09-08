@@ -48,12 +48,10 @@ export class SupabaseService {
             tagsInString = tagsInString + tag + ',';
         })
 
-        console.log("tags eee", tagsInString)
 
         if (tagsInString.charAt(tagsInString.length - 1) === ',') {
             tagsInString = tagsInString.slice(0, tagsInString.length - 1)
         }
-        console.log("tags here", tagsInString)
         const query = this.supabase.from('appImg').insert({ data: url, tags: tagsInString });
 
         return from(query).pipe(

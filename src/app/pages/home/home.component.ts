@@ -107,7 +107,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   uploadImg($event: any) {
     var reader = new FileReader();
-    console.log("selectedtags", this.selectedTags)
     if ($event.target.files && $event.target.files[0]) {
       var reader = new FileReader();
       reader.onload = (event: any) => {
@@ -115,7 +114,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.selectedFileUrl = event.target.result;
         this.selectedFile = $event.target.files[0];
         this.supabaseService.postAppImg(this.selectedTags, this.selectedFileUrl).subscribe(response => {
-          console.log("response", response)
           response[0].tags = this.CSVToString(response[0].tags)
           this.loadedImgs.push(response[0])
           this.uploadingImg = false;
