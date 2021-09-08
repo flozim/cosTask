@@ -5,6 +5,7 @@ import { AppImg } from 'src/app/model/appImg';
 import { SupabaseService } from 'src/app/services/supabase.service';
 import { COMMA, ENTER, I, SPACE } from '@angular/cdk/keycodes';
 import * as moment from 'moment';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-home',
@@ -16,21 +17,32 @@ export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('largeImageOverlay') largeImageOverlay: ElementRef;
 
   loadedImgs: AppImg[] = [];
-  loadingIds: boolean = true;
-  loadedImgIds: string[] = [];
 
   selectedFile: File;
   selectedTags: string[] = [];
+
+  /**
+   * The data of the img that will be uploaded as a string.
+   */
   selectedFileUrl: string;
+
+  /**
+   * Used to toggle mat-spinner objects while loading.
+   */
+  loadingIds: boolean = true;
   loadingIndividualIds: boolean = false;
+  uploadingImg: boolean = false;
 
   largeImgOverlayData: string;
 
+  /**
+   * These keys create a new tag when hit.
+   */
   readonly separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
 
-
   constructor(
-    private supabaseService: SupabaseService
+    private supabaseService: SupabaseService,
+    private snackbar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -40,37 +52,46 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.loadAppImgIds();
   }
 
+  /**
+   * First loads a list of ids of all AppImg objects in the db.
+   * Then the individual AppImgs are loaded in parallel.
+   */
   loadAppImgIds() {
     this.loadingIds = true;
     this.supabaseService.getAllAppImgIds().subscribe(response => {
       if (response === null) {
-        //TODO: error management
+        this.snackbar.open('Bilder konnten nicht geladen werden')
+      } else {
+        response.forEach(element => {
+          this.loadedImgs.push(element)
+        });
+
+        this.loadingIds = false;
+
+        if (this.loadedImgs.length > 0) {
+          this.loadingIndividualIds = true;
+        }
+        this.loadedImgs.forEach(appImg => {
+
+          this.supabaseService.getAppImgById(appImg.id).subscribe(response => {
+            appImg.data = response[0].data;
+
+            appImg.tags = this.CSVToString(response[0].tags);
+
+            appImg.timestamp = this.formatDateTime(response[0].timestamp)
+
+
+          }, error => {
+            this.snackbar.open('Ein Bild konnte nicht geladen werden: ', error)
+          })
+        });
       }
-
-      response.forEach(element => {
-        this.loadedImgs.push(element)
-      });
-
-      this.loadingIds = false;
-
-      if (this.loadedImgs.length > 0) {
-        this.loadingIndividualIds = true;
-      }
-      this.loadedImgs.forEach(appImg => {
-
-        this.supabaseService.getAppImgById(appImg.id).subscribe(response => {
-          appImg.data = response[0].data;
-
-          appImg.tags = this.CSVToString(response[0].tags);
-
-          appImg.timestamp = this.formatDateTime(response[0].timestamp)
-
-
-        })
-      });
 
       this.loadingIndividualIds = false;
 
+    }, error => {
+      this.loadingIndividualIds = false;
+      this.snackbar.open('Bilder konnten nicht geladen werden: ', error)
     })
   }
 
@@ -86,24 +107,30 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   uploadImg($event: any) {
     var reader = new FileReader();
-
-
+    console.log("selectedtags", this.selectedTags)
     if ($event.target.files && $event.target.files[0]) {
       var reader = new FileReader();
       reader.onload = (event: any) => {
+        this.uploadingImg = true;
         this.selectedFileUrl = event.target.result;
         this.selectedFile = $event.target.files[0];
-        this.supabaseService.postAppImg(this.selectedFile, this.selectedTags, this.selectedFileUrl).subscribe(response => {
+        this.supabaseService.postAppImg(this.selectedTags, this.selectedFileUrl).subscribe(response => {
+          console.log("response", response)
+          response[0].tags = this.CSVToString(response[0].tags)
           this.loadedImgs.push(response[0])
+          this.uploadingImg = false;
+          this.snackbar.open('Bild wurde erfolgreich hochgeladen!')
+          this.selectedFile = null;
+          this.selectedFileUrl = null
+        }, error => {
+          this.snackbar.open('Bild konnte nicht hochgeladen werden: ', error)
+          this.uploadingImg = false;
+          this.selectedFile = null;
+          this.selectedFileUrl = null
         })
       }
       reader.readAsDataURL($event.target.files[0]);
-
-
-
-
     }
-
   }
 
   addTag(event: MatChipInputEvent): void {

@@ -14,6 +14,10 @@ export class SupabaseService {
         this.supabase = createClient(environment.supabaseUrl, environment.supbaseKey);
     }
 
+    /**
+     * 
+     * @returns Object[] with  field id:number
+     */
     getAllAppImgIds(): Observable<any> {
         const query = this.supabase.from('appImg').select('id');
 
@@ -31,26 +35,25 @@ export class SupabaseService {
     }
 
     /**
-     * First, upload the img file into the supabase bucket.
-     * Then create an appImg object in the supabase db and use the path of the previously 
-     * uploaded img in the new db object.
-     * @param img 
+     * 
      * @param tags 
-     * @returns 
+     * @param url 
+     * @returns AppImg[]
      */
-    postAppImg(img: File, tags: string[], url: string): Observable<any> {
-
+    postAppImg(tags: string[], url: string): Observable<any> {
 
         let tagsInString: string = "";
 
         tags.forEach(tag => {
-            tagsInString += ',' + tag;
+            tagsInString = tagsInString + tag + ',';
         })
 
-        if (tagsInString.charAt(0) === ',') {
-            tagsInString = tagsInString.slice(1, tagsInString.length - 1)
-        }
+        console.log("tags eee", tagsInString)
 
+        if (tagsInString.charAt(tagsInString.length - 1) === ',') {
+            tagsInString = tagsInString.slice(0, tagsInString.length - 1)
+        }
+        console.log("tags here", tagsInString)
         const query = this.supabase.from('appImg').insert({ data: url, tags: tagsInString });
 
         return from(query).pipe(
