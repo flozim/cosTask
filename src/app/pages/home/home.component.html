@@ -4,8 +4,6 @@
 
 <div id="content">
 
-
-
     <div id="tags_container">
 
         <p *ngIf="!loadingIds && loadedImgs?.length===0">
@@ -19,7 +17,7 @@
                     {{tag}}
                     <mat-icon matChipRemove (click)="removeTag(tag)">cancel</mat-icon>
                 </mat-chip>
-                <input matInput placeholder="Neuer Tag..." [matChipInputFor]="chipList"
+                <input color="primary" matInput [matChipInputFor]="chipList"
                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
                     (matChipInputTokenEnd)="addTag($event)">
             </mat-chip-list>

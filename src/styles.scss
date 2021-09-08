@@ -1,9 +1,11 @@
-
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 // Plus imports for other components in your app.
-
+@font-face {
+    font-family: source-sans-pro;
+    src: url(assets/fonts/source-sans-pro-v14-latin-regular.woff) format("opentype");
+}
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
@@ -28,5 +30,45 @@ $cosTask-theme: mat-light-theme($cosTask-primary, $cosTask-accent, $cosTask-warn
 
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+    --primary-color: #d4d800;
+    --primary-lighter-color: #ffffff;
+    --primary-darker-color: #262626;
+    --text-primary-color: #{$light-primary-text};
+    --text-primary-lighter-color: #{$dark-primary-text};
+    --text-primary-darker-color: #{$light-primary-text};
+}
+
+.mat-form-field {
+    .mat-input-element {
+        color: #000;
+    }
+    .mat-form-field-label {
+        color: var(--primary-color);
+    }
+    .mat-form-field-underline {
+        background-color: var(--primary-color);
+    }
+    .mat-form-field-ripple {
+        background-color: var(--primary-color);
+    }
+    .mat-form-field-required-marker {
+        color: var(--primary-color);
+    }
+}
+
+.mat-chip.mat-standard-chip {
+    background-color: var(--primary-color);
+}
+
+html,
+body {
+    height: 100%;
+}
+body {
+    margin: 0;
+    // font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-family: Source Sans Pro, sans-serif;
+    font-feature-settings: "kern", "liga", "clig", "calt";
+    font-weight: 400;
+}
